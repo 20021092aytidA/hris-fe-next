@@ -12,7 +12,7 @@ export default function NavbarDesktop() {
       >
         hris.<span className="text-red-700 font-bold">apic</span>
       </Link>
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-8">
         <NavbarLinks />
         <div className="dropdown dropdown-end">
           <div tabIndex={0} role="button" className="cursor-pointer">

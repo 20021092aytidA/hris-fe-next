@@ -5,7 +5,7 @@ export default function EmployeeOverview() {
   return (
     <>
       <Link
-        className="block underline font-semibold text-md text-white"
+        className="inline-block underline font-semibold text-md text-white"
         href="/employee"
       >
         Employee
