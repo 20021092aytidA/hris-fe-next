@@ -49,11 +49,11 @@ export default function LoginForm() {
             type="checkbox"
             checked={isRemeber}
             onChange={() => setIsRemeber(isRemeber ? false : true)}
-            className="size-5 checkbox rounded-md border-gray-300 checked:bg-red-500! checked:text-white"
+            className="size-5 checkbox rounded-md border-gray-300 checked:bg-red-700! checked:text-white"
           />
         </div>
         <button
-          className="px-4 py-2 font-semibold hover:underline text-white bg-red-500! hover:bg-red-600! rounded-sm cursor-pointer text-sm shadow-md"
+          className="px-4 py-2 font-semibold hover:underline text-white bg-red-700! hover:bg-red-800! rounded-sm cursor-pointer text-sm shadow-md"
           onClick={() => handleLogin()}
         >
           login
