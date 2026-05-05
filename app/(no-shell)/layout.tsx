@@ -5,5 +5,9 @@ export default function NoShellLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <>
+      <div className="min-h-screen">{children}</div>
+    </>
+  );
 }
