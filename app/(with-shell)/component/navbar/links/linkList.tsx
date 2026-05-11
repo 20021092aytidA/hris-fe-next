@@ -14,6 +14,10 @@ const LinkList: LinkListType[] = [
     label: "Applicant",
     link: "/applicant",
   },
+  {
+    label: "Request",
+    link: "/request",
+  },
 ];
 
 export { LinkList, type LinkListType };
