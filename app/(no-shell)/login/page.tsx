@@ -5,9 +5,9 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center text-black">
       <div>
-        <div className="flex items-start">
+        <div className="flex justify-between items-start">
           <div className="text-7xl">
-            hris.<span className="text-red-600">apic</span>
+            hris.<span className="text-red-600">[name]</span>
           </div>
           <div>LOGIN</div>
         </div>

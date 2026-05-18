@@ -11,10 +11,6 @@ const LinkList: LinkListType[] = [
     link: "/employee",
   },
   {
-    label: "Applicant",
-    link: "/applicant",
-  },
-  {
     label: "Request",
     link: "/request",
   },

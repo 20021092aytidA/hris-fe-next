@@ -1,14 +1,14 @@
 import Link from "next/link";
 import React from "react";
 
-export default function ApplciantOverview() {
+export default function RequestOverview() {
   return (
     <>
       <Link
         className="inline-block underline font-semibold text-md text-white"
         href="/applicant"
       >
-        Applicant
+        Request
       </Link>
       <div className="stats shadow w-full rounded-sm font-semibold bg-gray-100">
         <div className="stat place-items-center">

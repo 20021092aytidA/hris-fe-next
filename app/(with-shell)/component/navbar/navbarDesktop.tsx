@@ -10,7 +10,7 @@ export default function NavbarDesktop() {
         href="/dashboard"
         className="text-2xl px-3 py-2 hover:underline text-black font-semibold"
       >
-        hris.<span className="text-red-700 font-bold">apic</span>
+        hris.<span className="text-red-700 font-bold">[name]</span>
       </Link>
       <div className="flex items-center space-x-8">
         <NavbarLinks />

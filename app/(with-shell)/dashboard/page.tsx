@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import ApplciantOverview from "./component/applicantOverview";
+import ApplciantOverview from "./component/requestOverview";
 import EmployeeOverview from "./component/employeeOverview";
 
 export default function DashboardPage() {
