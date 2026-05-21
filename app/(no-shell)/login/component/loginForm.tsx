@@ -5,25 +5,65 @@ import { useState } from "react";
 
 export default function LoginForm() {
   const nav = useRouter();
-  const [email, setEmail] = useState<string>("");
+  const [username, setEmail] = useState<string>("");
   const [pass, setPass] = useState<string>("");
-  const [isRemeber, setIsRemeber] = useState<boolean>(false);
+  const [isRemember, setIsRemember] = useState<boolean>(false);
 
-  const handleLogin = () => {
-    nav.push("/dashboard");
+  const handleLogin = async () => {
+    // nav.push("/dashboard");
+    // return;
+
+    const jsonReq = {
+      username: username,
+      password: pass,
+    };
+
+    try {
+      const res = await fetch("http://localhost:8080/hris-api/v1/user/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(jsonReq),
+        credentials: "include",
+      });
+
+      if (res.ok) {
+        const jsonRes: any = await res.json();
+        alert("login success");
+        nav.push("/dashboard");
+        return;
+      }
+
+      switch (res.status) {
+        case 404:
+          alert("login failed!\nuser not found");
+          break;
+
+        case 401:
+          alert("login failed!\nwrong credentials");
+          break;
+
+        default:
+          alert("login failed");
+          break;
+      }
+    } catch (error) {
+      alert(`login failed:\n${error}`);
+    }
   };
 
   return (
     <>
       <div className="grid grid-cols-6 gap-4">
         <fieldset className="col-span-6 sm:col-span-3 fieldset mb-2">
-          <legend className="fieldset-legend text-black">Email</legend>
+          <legend className="fieldset-legend text-black">Username</legend>
           <input
-            type="email"
+            type="username"
             required
             className="input bg-white text-xs outline outline-gray-200"
-            placeholder="Input email"
-            value={email}
+            placeholder="Input username"
+            value={username}
             onChange={(e) => setEmail(e.target.value)}
           />
         </fieldset>
@@ -47,8 +87,8 @@ export default function LoginForm() {
           <input
             id="rememberCheck"
             type="checkbox"
-            checked={isRemeber}
-            onChange={() => setIsRemeber(isRemeber ? false : true)}
+            checked={isRemember}
+            onChange={() => setIsRemember(isRemember ? false : true)}
             className="size-5 checkbox rounded-md border-gray-300 checked:bg-red-700! checked:text-white"
           />
         </div>

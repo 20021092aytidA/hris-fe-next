@@ -12,7 +12,9 @@ export default function ShellLayout({
     <>
       <NavbarDesktop />
       <NavbarMobile />
-      <div className="min-h-screen p-2 sm:p-4">{children}</div>
+      <div className="min-h-screen p-2 sm:p-4 sm:px-10 md:px-20 ">
+        {children}
+      </div>
       <Footer />
     </>
   );

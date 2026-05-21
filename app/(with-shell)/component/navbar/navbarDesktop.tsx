@@ -2,6 +2,7 @@ import HomeIcon from "@/public/icons/homeIcon";
 import NavbarLinks from "./links/navbarLinks";
 import Link from "next/link";
 import ProfileIcon from "@/public/icons/profileIcon";
+import LogOutBtn from "./component/LogOutBtn";
 
 export default function NavbarDesktop() {
   return (
@@ -23,7 +24,7 @@ export default function NavbarDesktop() {
             className="mt-2 dropdown-content menu bg-gray-100 rounded-box z-1 w-52 p-2 shadow-sm"
           >
             <li>
-              <Link href="/login">Log out</Link>
+              <LogOutBtn />
             </li>
           </ul>
         </div>
