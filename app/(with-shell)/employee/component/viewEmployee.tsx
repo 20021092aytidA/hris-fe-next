@@ -13,10 +13,33 @@ export default function ViewEmployee({
   cookie: string | undefined;
 }) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [employee, setEmployee] = useState<EmployeeDetail | undefined>();
+  const [employee, setEmployee] = useState<EmployeeDetail>({
+    user: {
+      username: "",
+      email: "",
+      id: -1,
+      role: {
+        id: -1,
+        roleName: "",
+      },
+      roleID: -1,
+    },
+    userID: -1,
+    address: "",
+    dateOfBirth: "",
+    fullName: "",
+    id: -1,
+    jobPosition: "",
+    joinDate: "",
+    leaveAmount: -1,
+    note: "",
+    salary: "",
+  });
 
   useEffect(() => {
-    getEmployee();
+    if (isOpen) {
+      getEmployee();
+    }
   }, [isOpen]);
 
   const getEmployee = async () => {

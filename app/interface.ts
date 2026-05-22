@@ -20,7 +20,7 @@ type EmployeeDetail = {
   salary: string;
   dateOfBirth: string;
   joinDate: string;
-  leaveAmount: string;
+  leaveAmount: number;
   note: string;
   user: Employee;
 };

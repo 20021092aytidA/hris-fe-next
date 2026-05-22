@@ -59,8 +59,11 @@ export default async function EmployeePage() {
                   <td>{employee.role.roleName}</td>
                   <td className="flex justify-center items-center space-x-4">
                     <ViewEmployee id={employee.id} cookie={userCookie?.value} />
-                    <EditEmployee />
-                    <DeleteEmployee />
+                    <EditEmployee id={employee.id} cookie={userCookie?.value} />
+                    <DeleteEmployee
+                      id={employee.id}
+                      cookie={userCookie?.value}
+                    />
                   </td>
                 </tr>
               );
