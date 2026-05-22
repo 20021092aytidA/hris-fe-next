@@ -2,7 +2,7 @@ import HomeIcon from "@/public/icons/homeIcon";
 import NavbarLinks from "./links/navbarLinks";
 import Link from "next/link";
 import ProfileIcon from "@/public/icons/profileIcon";
-import LogOutBtn from "./component/LogOutBtn";
+import LogOutBtn from "./component/logOutBtn";
 
 export default function NavbarDesktop() {
   return (

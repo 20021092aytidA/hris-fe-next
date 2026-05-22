@@ -8,7 +8,12 @@ export default function NavbarMobile() {
   return (
     <header className="sm:hidden h-15 bg-red-700 flex justify-between items-center px-5">
       <div className="drawer text-white">
-        <input id="my-drawer-1" type="checkbox" className="drawer-toggle" />
+        <input
+          id="my-drawer-1"
+          type="checkbox"
+          className="drawer-toggle"
+          value={-1}
+        />
         <label htmlFor="my-drawer-1" className="cursor-pointer drawer-button">
           <BurgerIcon />
         </label>

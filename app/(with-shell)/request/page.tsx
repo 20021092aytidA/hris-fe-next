@@ -1,6 +1,50 @@
+import { cookies } from "next/headers";
 import React from "react";
 
-export default function RequestPage() {
+export default async function RequestPage() {
+  type Employee = {
+    id: number;
+    roleID: number;
+    username: string;
+    email: string;
+    role: {
+      id: number;
+      roleName: string;
+    };
+  };
+
+  type Request = {
+    id: number;
+    userID: number;
+    title: string;
+    description: string;
+    status: string;
+    user: Employee;
+  };
+
+  let listRequest: Request[] = [];
+
+  const getRequests = async () => {
+    try {
+      const cookieStorage = await cookies();
+      const userCookie = cookieStorage.get("jwt");
+
+      const res = await fetch("http://localhost:8080/hris-api/v1/request", {
+        headers: {
+          Authorization: `Bearer ${userCookie?.value}`,
+        },
+      });
+      if (res.ok) {
+        const listJSON: any = await res.json();
+        listRequest = listJSON.data[0];
+      }
+    } catch (error) {
+      console.warn(error);
+    }
+  };
+
+  await getRequests();
+
   return (
     <div className="rounded-sm p-2 bg-red-700">
       <div className="flex justify-end mb-2">
@@ -9,40 +53,29 @@ export default function RequestPage() {
         </label>
       </div>
       <div className="overflow-x-auto bg-white rounded-sm shadow-md">
-        <table className="table table-xs p-2">
+        <table className="table table-md p-2">
           <thead>
             <tr className="text-red-700">
-              <th></th>
-              <th>Name</th>
-              <th>Job</th>
-              <th>company</th>
-              <th>location</th>
-              <th>Last Login</th>
-              <th>Favorite Color</th>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Status</th>
+              <th>Username</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th>1</th>
-              <td>Cy Ganderton</td>
-              <td>Quality Control Specialist</td>
-              <td>Littel, Schaden and Vandervort</td>
-              <td>Canada</td>
-              <td>12/16/2020</td>
-              <td>Blue</td>
-            </tr>
+            {listRequest?.map((request: Request) => {
+              return (
+                <tr key={request.id}>
+                  <th>{request.id}</th>
+                  <td>{request.title}</td>
+                  <td>{request.description}</td>
+                  <td>{request.status}</td>
+                  <td>{request.user.username}</td>
+                </tr>
+              );
+            })}
           </tbody>
-          <tfoot>
-            <tr>
-              <th></th>
-              <th>Name</th>
-              <th>Job</th>
-              <th>company</th>
-              <th>location</th>
-              <th>Last Login</th>
-              <th>Favorite Color</th>
-            </tr>
-          </tfoot>
         </table>
       </div>
     </div>
