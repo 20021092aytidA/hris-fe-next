@@ -89,6 +89,10 @@ export default function ViewEmployee({
             <div className="p-2 bg-gray-100 rounded-sm text-end">
               {employee?.user.email}
             </div>
+            <div>Role</div>
+            <div className="p-2 bg-gray-100 rounded-sm text-end">
+              {employee?.user.role.roleName}
+            </div>
           </div>
           <div className="bg-white rounded-sm p-2">
             <div className="mb-1 underline text-center text-sm">
@@ -120,7 +124,11 @@ export default function ViewEmployee({
             </div>
             <div>Leave amount</div>
             <div className="p-2 bg-gray-100 rounded-sm text-end">
-              {employee?.leaveAmount}
+              {employee?.leaveAmount ?? "0"}
+            </div>
+            <div>Note</div>
+            <div className="p-2 bg-gray-100 rounded-sm text-end">
+              {employee?.note}
             </div>
           </div>
         </div>

@@ -322,6 +322,18 @@ export default function EditEmployee({
                 }));
               }}
             />
+            <label className="block">Note</label>
+            <input
+              type="text"
+              className="p-2 bg-gray-100 w-full rounded-sm text-end"
+              value={employeeDetail?.note ?? ""}
+              onChange={(e) => {
+                setEmployeeDetail((prev) => ({
+                  ...prev!,
+                  note: e.target.value,
+                }));
+              }}
+            />
           </div>
           <button onClick={saveAll} className="btn w-full">
             Edit
