@@ -86,7 +86,9 @@ export default function AddEmployee({
 
         if (resDetail.ok) {
           alert("user created successfully!");
+          return;
         }
+        alert("failed creating user!");
       }
     } catch (error) {
       console.warn(error);

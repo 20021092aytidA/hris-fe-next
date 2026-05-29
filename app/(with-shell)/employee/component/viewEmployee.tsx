@@ -124,7 +124,7 @@ export default function ViewEmployee({
             </div>
             <div>Leave amount</div>
             <div className="p-2 bg-gray-100 rounded-sm text-end">
-              {employee?.leaveAmount ?? "0"}
+              {employee?.leaveAmount ?? 0}
             </div>
             <div>Note</div>
             <div className="p-2 bg-gray-100 rounded-sm text-end">

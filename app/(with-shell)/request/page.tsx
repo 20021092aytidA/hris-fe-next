@@ -1,34 +1,18 @@
+import { Request } from "@/app/interface";
 import { cookies } from "next/headers";
-import React from "react";
+import ViewReqBtn from "./component/viewReqBtn";
+import DeleteReqBtn from "./component/deleteReqBtn";
+import AddReqBtn from "./component/addReqBtn";
+import ApproveOrRejectReqBtn from "./component/approveOrRejectReqBtn";
 
 export default async function RequestPage() {
-  type Employee = {
-    id: number;
-    roleID: number;
-    username: string;
-    email: string;
-    role: {
-      id: number;
-      roleName: string;
-    };
-  };
-
-  type Request = {
-    id: number;
-    userID: number;
-    title: string;
-    description: string;
-    status: string;
-    user: Employee;
-  };
+  const cookieStorage = await cookies();
+  const userCookie = cookieStorage.get("jwt");
 
   let listRequest: Request[] = [];
 
   const getRequests = async () => {
     try {
-      const cookieStorage = await cookies();
-      const userCookie = cookieStorage.get("jwt");
-
       const res = await fetch("http://localhost:8080/hris-api/v1/request", {
         headers: {
           Authorization: `Bearer ${userCookie?.value}`,
@@ -36,7 +20,7 @@ export default async function RequestPage() {
       });
       if (res.ok) {
         const listJSON: any = await res.json();
-        listRequest = listJSON.data[0];
+        listRequest = listJSON.data;
       }
     } catch (error) {
       console.warn(error);
@@ -47,7 +31,8 @@ export default async function RequestPage() {
 
   return (
     <div className="rounded-sm p-2 bg-red-700">
-      <div className="flex justify-end mb-2">
+      <div className="flex justify-between mb-2">
+        <AddReqBtn cookie={userCookie?.value} />
         <label className="input bg-transparent text-white border-white">
           <input type="search" className="grow" placeholder="Search" />
         </label>
@@ -58,9 +43,10 @@ export default async function RequestPage() {
             <tr className="text-red-700">
               <th>ID</th>
               <th>Title</th>
-              <th>Description</th>
-              <th>Status</th>
               <th>Username</th>
+              <th>Status</th>
+              <th className="text-center">Action</th>
+              <th className="text-center">Approve / Reject</th>
             </tr>
           </thead>
           <tbody>
@@ -69,9 +55,24 @@ export default async function RequestPage() {
                 <tr key={request.id}>
                   <th>{request.id}</th>
                   <td>{request.title}</td>
-                  <td>{request.description}</td>
-                  <td>{request.status}</td>
                   <td>{request.user.username}</td>
+                  <td>{request.status}</td>
+                  <td className="space-x-2 text-center">
+                    <ViewReqBtn id={request.id} cookie={userCookie?.value} />
+                    <DeleteReqBtn id={request.id} cookie={userCookie?.value} />
+                  </td>
+                  <td className="space-x-2 text-center">
+                    <ApproveOrRejectReqBtn
+                      id={request.id}
+                      cookie={userCookie?.value}
+                      isApproving={true}
+                    />
+                    <ApproveOrRejectReqBtn
+                      id={request.id}
+                      cookie={userCookie?.value}
+                      isApproving={false}
+                    />
+                  </td>
                 </tr>
               );
             })}

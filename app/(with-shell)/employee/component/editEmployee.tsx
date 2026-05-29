@@ -314,7 +314,7 @@ export default function EditEmployee({
             <input
               type="number"
               className="p-2 bg-gray-100 w-full rounded-sm text-end"
-              value={employeeDetail?.leaveAmount ?? ""}
+              value={employeeDetail?.leaveAmount ?? 0}
               onChange={(e) => {
                 setEmployeeDetail((prev) => ({
                   ...prev!,

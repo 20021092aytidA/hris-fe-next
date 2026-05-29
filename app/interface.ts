@@ -11,6 +11,15 @@ type Employee = {
   role: Role;
 };
 
+type Request = {
+  id: number;
+  userID: number;
+  title: string;
+  description: string;
+  status: string;
+  user: Employee;
+};
+
 type EmployeePOST = {
   username: string;
   password: string;
@@ -57,4 +66,11 @@ type EmployeeDetail = {
   user: Employee;
 };
 
-export type { Role, Employee, EmployeePOST, EmployeePUT, EmployeeDetail };
+export type {
+  Role,
+  Employee,
+  Request,
+  EmployeePOST,
+  EmployeePUT,
+  EmployeeDetail,
+};
