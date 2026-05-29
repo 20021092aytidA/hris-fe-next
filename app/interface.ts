@@ -11,6 +11,38 @@ type Employee = {
   role: Role;
 };
 
+type EmployeePOST = {
+  username: string;
+  password: string;
+  userID: number;
+  roleID: number;
+  email: string;
+  fullName: string;
+  jobPosition: string;
+  salary: string;
+  joinDate: string;
+  address: string;
+  dateOfBirth: string;
+  leaveAmount?: number;
+  note?: string;
+};
+
+type EmployeePUT = {
+  username: string;
+  userID: number;
+  userDetailID: number;
+  roleID: number;
+  email: string;
+  fullName: string;
+  jobPosition: string;
+  salary: string;
+  joinDate: string;
+  address: string;
+  dateOfBirth: string;
+  leaveAmount?: number;
+  note?: string;
+};
+
 type EmployeeDetail = {
   id: number;
   userID: number;
@@ -25,4 +57,4 @@ type EmployeeDetail = {
   user: Employee;
 };
 
-export type { Role, Employee, EmployeeDetail };
+export type { Role, Employee, EmployeePOST, EmployeePUT, EmployeeDetail };

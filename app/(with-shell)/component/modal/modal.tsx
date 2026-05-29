@@ -12,7 +12,7 @@ export default function Modal({
 }) {
   return (
     <div
-      className={`${open ? "flex" : "hidden"} justify-center items-center fixed top-0 left-0 w-screen h-screen bg-[rgba(0,0,0,.05)]`}
+      className={`${open ? "flex" : "hidden"} justify-center items-center fixed top-0 left-0 w-screen h-screen bg-[rgba(0,0,0,.05)] z-2`}
     >
       <div
         onClick={close}

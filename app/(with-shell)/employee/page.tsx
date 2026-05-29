@@ -5,6 +5,7 @@ import type { Employee } from "../../interface";
 import ViewEmployee from "./component/viewEmployee";
 import EditEmployee from "./component/editEmployee";
 import DeleteEmployee from "./component/deleteEmployee";
+import AddEmployee from "./component/addEmployee";
 
 export default async function EmployeePage() {
   let listEmployee: Employee[] | undefined = [];
@@ -33,7 +34,7 @@ export default async function EmployeePage() {
   return (
     <div className="rounded-sm p-2 bg-red-700">
       <div className="flex justify-between">
-        <button className="btn mb-2">Add</button>
+        <AddEmployee cookie={userCookie?.value} />
         <label className="input bg-transparent text-white border-white">
           <input type="search" className="grow" placeholder="Search" />
         </label>

@@ -3,32 +3,23 @@
 import WrenchIcon from "@/public/icons/wrenchIcon";
 import Modal from "../../component/modal/modal";
 import { useEffect, useState } from "react";
-import { Employee, EmployeeDetail, EmployeePUT, Role } from "@/app/interface";
+import { EmployeeDetail, EmployeePOST, Role } from "@/app/interface";
 
-export default function EditEmployee({
-  id,
+export default function AddEmployee({
   cookie,
 }: {
-  id: number | string;
   cookie: string | undefined;
 }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [employeeDetail, setEmployeeDetail] = useState<EmployeePUT>();
-  const [role, setRole] = useState<Role>();
+  const [role, setRole] = useState<Role[]>();
+  const [employeeDetail, setEmployeeDetail] = useState<EmployeePOST>();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (isOpen) {
-      getData();
+      getRoles();
     }
   }, [isOpen]);
-
-  const getData = async () => {
-    setIsLoading(true);
-    await getEmployeeDetail();
-    await getRoles();
-    setIsLoading(false);
-  };
 
   const getRoles = async () => {
     try {
@@ -48,135 +39,73 @@ export default function EditEmployee({
     }
   };
 
-  const getEmployeeDetail = async () => {
+  const addEmployee = async () => {
+    const addUserForm = {
+      roleID: employeeDetail!.roleID,
+      password: employeeDetail!.password,
+      username: employeeDetail!.username,
+      email: employeeDetail!.email,
+    };
+
     try {
-      const res = await fetch(
-        `http://localhost:8080/hris-api/v1/user-detail?user_id=${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${cookie}`,
-          },
+      const res = await fetch(`http://localhost:8080/hris-api/v1/user`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${cookie}`,
         },
-      );
+        body: JSON.stringify(addUserForm),
+      });
 
       if (res.ok) {
-        const listJSON = await res.json();
-        const currEmployeeDetail = listJSON.data[0];
-        setEmployeeDetail({
-          userDetailID: currEmployeeDetail.id,
-          username: currEmployeeDetail.user.username,
-          userID: currEmployeeDetail.userID,
-          roleID: currEmployeeDetail.user.roleID,
-          address: currEmployeeDetail.address,
-          dateOfBirth: currEmployeeDetail.dateOfBirth
-            ? currEmployeeDetail.dateOfBirth.split("T")[0]
-            : "",
-          email: currEmployeeDetail.user.email,
-          fullName: currEmployeeDetail.fullName,
-          jobPosition: currEmployeeDetail.jobPosition,
-          joinDate: currEmployeeDetail.joinDate
-            ? currEmployeeDetail.joinDate.split("T")[0]
-            : "",
-          salary: currEmployeeDetail.salary,
-          leaveAmount: currEmployeeDetail.leaveAmount,
-          note: currEmployeeDetail.note,
-        });
-      }
-    } catch (error) {
-      console.warn(error);
-    }
-  };
+        const listJSON: any = await res.json();
+        console.log(listJSON);
+        const userID = listJSON.data.id;
 
-  const saveAll = async () => {
-    const editUserForm: Record<string, any> = {};
-    const editUserDetailForm: Record<string, any> = {};
+        const addUserDetailForm = {
+          userID: userID,
+          fullName: employeeDetail!.fullName,
+          address: employeeDetail!.address,
+          jobPosition: employeeDetail!.jobPosition,
+          salary: employeeDetail!.salary,
+          dateOfBirth: employeeDetail!.dateOfBirth,
+          joinDate: employeeDetail!.joinDate,
+          leaveAmount: employeeDetail?.leaveAmount,
+          note: employeeDetail?.note,
+        };
 
-    Object.entries(employeeDetail!).forEach(([key, value]) => {
-      if (value !== undefined && value != "") {
-        if (key === "username" || key === "email" || key === "roleID") {
-          editUserForm[key] = value;
-        } else {
-          editUserDetailForm[key] = value;
+        const resDetail = await fetch(
+          `http://localhost:8080/hris-api/v1/user-detail`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+            body: JSON.stringify(addUserDetailForm),
+          },
+        );
+
+        if (resDetail.ok) {
+          alert("user created successfully!");
         }
       }
-    });
-
-    let userEdited = false;
-    let userDetailEdited = false;
-    if (Object.entries(editUserForm).length !== 0) {
-      userEdited = await saveUser(editUserForm);
-    }
-    if (Object.entries(editUserDetailForm).length !== 0) {
-      userDetailEdited = await saveUserDetail(editUserDetailForm);
-    }
-
-    alert(
-      `user: ${userEdited ? "successfully edited!" : "failed editing!"}\nuser detail:${userDetailEdited ? "successfully edited!" : "failed editing!"}`,
-    );
-  };
-
-  const saveUser = async (form: Record<string, any>): Promise<boolean> => {
-    try {
-      const res = await fetch(
-        `http://localhost:8080/hris-api/v1/user/${employeeDetail?.userID}`,
-
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${cookie}`,
-          },
-          body: JSON.stringify(form),
-        },
-      );
-
-      if (res.ok) {
-        return true;
-      }
-
-      return false;
     } catch (error) {
       console.warn(error);
-      return false;
-    }
-  };
-
-  const saveUserDetail = async (
-    form: Record<string, any>,
-  ): Promise<boolean> => {
-    try {
-      const res = await fetch(
-        `http://localhost:8080/hris-api/v1/user-detail/${employeeDetail?.userDetailID}`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${cookie}`,
-          },
-          body: JSON.stringify(form),
-        },
-      );
-
-      if (res.ok) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      alert("failed editing user!");
-      console.warn(error);
-
-      return false;
     }
   };
 
   return (
     <>
-      <button className="cursor-pointer" onClick={() => setIsOpen(true)}>
-        <WrenchIcon />
+      <button
+        className="btn mb-2 cursor-pointer"
+        onClick={() => setIsOpen(true)}
+      >
+        Add
       </button>
 
       <Modal open={isOpen} close={() => setIsOpen(false)}>
-        <div className="bg-red-700 rounded-sm w-sm p-2 max-h-[90vh] overflow-y-auto space-y-2 text-xs">
+        <div className="bg-red-700 rounded-sm w-sm p-2 max-h-[90vh] space-y-2 text-xs overflow-y-auto">
           <div className="flex justify-between bg-white rounded-sm p-2">
-            <div className="text-sm">Edit Employee</div>
+            <div className="text-sm">Add Employee</div>
             <button className="cursor-pointer" onClick={() => setIsOpen(false)}>
               X
             </button>
@@ -189,7 +118,7 @@ export default function EditEmployee({
             <input
               type="text"
               className="p-2 bg-gray-100 w-full rounded-sm text-end"
-              value={employeeDetail?.username ?? ""}
+              value={employeeDetail?.username}
               onChange={(e) => {
                 setEmployeeDetail((prev) => ({
                   ...prev!,
@@ -197,11 +126,23 @@ export default function EditEmployee({
                 }));
               }}
             />
+            <label className="block">Password</label>
+            <input
+              type="password"
+              className="p-2 bg-gray-100 w-full rounded-sm text-end"
+              value={employeeDetail?.password}
+              onChange={(e) => {
+                setEmployeeDetail((prev) => ({
+                  ...prev!,
+                  password: e.target.value,
+                }));
+              }}
+            />
             <label className="block">Email</label>
             <input
               type="email"
               className="p-2 bg-gray-100 w-full rounded-sm text-end"
-              value={employeeDetail?.email ?? ""}
+              value={employeeDetail?.email}
               onChange={(e) => {
                 setEmployeeDetail((prev) => ({
                   ...prev!,
@@ -242,7 +183,7 @@ export default function EditEmployee({
             <input
               type="text"
               className="p-2 bg-gray-100 w-full rounded-sm text-end"
-              value={employeeDetail?.fullName ?? ""}
+              value={employeeDetail?.fullName}
               onChange={(e) => {
                 setEmployeeDetail((prev) => ({
                   ...prev!,
@@ -254,7 +195,7 @@ export default function EditEmployee({
             <input
               type="text"
               className="p-2 bg-gray-100 w-full rounded-sm text-end"
-              value={employeeDetail?.jobPosition ?? ""}
+              value={employeeDetail?.jobPosition}
               onChange={(e) => {
                 setEmployeeDetail((prev) => ({
                   ...prev!,
@@ -266,7 +207,7 @@ export default function EditEmployee({
             <input
               type="text"
               className="p-2 bg-gray-100 w-full rounded-sm text-end"
-              value={employeeDetail?.salary ?? ""}
+              value={employeeDetail?.salary}
               onChange={(e) => {
                 setEmployeeDetail((prev) => ({
                   ...prev!,
@@ -278,7 +219,7 @@ export default function EditEmployee({
             <input
               type="text"
               className="p-2 bg-gray-100 w-full rounded-sm text-end"
-              value={employeeDetail?.joinDate ?? ""}
+              value={employeeDetail?.joinDate}
               onChange={(e) => {
                 setEmployeeDetail((prev) => ({
                   ...prev!,
@@ -290,7 +231,7 @@ export default function EditEmployee({
             <input
               type="text"
               className="p-2 bg-gray-100 w-full rounded-sm text-end"
-              value={employeeDetail?.address ?? ""}
+              value={employeeDetail?.address}
               onChange={(e) => {
                 setEmployeeDetail((prev) => ({
                   ...prev!,
@@ -302,7 +243,7 @@ export default function EditEmployee({
             <input
               type="text"
               className="p-2 bg-gray-100 w-full rounded-sm text-end"
-              value={employeeDetail?.dateOfBirth ?? ""}
+              value={employeeDetail?.dateOfBirth}
               onChange={(e) => {
                 setEmployeeDetail((prev) => ({
                   ...prev!,
@@ -314,7 +255,7 @@ export default function EditEmployee({
             <input
               type="number"
               className="p-2 bg-gray-100 w-full rounded-sm text-end"
-              value={employeeDetail?.leaveAmount ?? ""}
+              value={employeeDetail?.leaveAmount}
               onChange={(e) => {
                 setEmployeeDetail((prev) => ({
                   ...prev!,
@@ -322,9 +263,21 @@ export default function EditEmployee({
                 }));
               }}
             />
+            <label className="block">Note</label>
+            <input
+              type="text"
+              className="p-2 bg-gray-100 w-full rounded-sm text-end"
+              value={employeeDetail?.note}
+              onChange={(e) => {
+                setEmployeeDetail((prev) => ({
+                  ...prev!,
+                  note: e.target.value,
+                }));
+              }}
+            />
           </div>
-          <button onClick={saveAll} className="btn w-full">
-            Edit
+          <button onClick={addEmployee} className="btn w-full">
+            Add
           </button>
         </div>
       </Modal>
