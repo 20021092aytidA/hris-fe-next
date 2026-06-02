@@ -4,30 +4,66 @@ import ViewReqBtn from "./component/viewReqBtn";
 import DeleteReqBtn from "./component/deleteReqBtn";
 import AddReqBtn from "./component/addReqBtn";
 import ApproveOrRejectReqBtn from "./component/approveOrRejectReqBtn";
+import { Suspense } from "react";
 
-export default async function RequestPage() {
+async function TableContent() {
   const cookieStorage = await cookies();
   const userCookie = cookieStorage.get("jwt");
-
-  let listRequest: Request[] = [];
 
   const getRequests = async () => {
     try {
       const res = await fetch("http://localhost:8080/hris-api/v1/request", {
+        cache: "no-store",
         headers: {
           Authorization: `Bearer ${userCookie?.value}`,
         },
       });
       if (res.ok) {
         const listJSON: any = await res.json();
-        listRequest = listJSON.data;
+        return listJSON.data;
       }
+      return [];
     } catch (error) {
       console.warn(error);
+      return [];
     }
   };
 
-  await getRequests();
+  const listReq = await getRequests();
+
+  return (
+    <>
+      {listReq?.map((request: Request) => (
+        <tr key={request.id}>
+          <th>{request.id}</th>
+          <td>{request.title}</td>
+          <td>{request.user.username}</td>
+          <td>{request.status}</td>
+          <td className="space-x-2 text-center">
+            <ViewReqBtn id={request.id} cookie={userCookie?.value} />
+            <DeleteReqBtn id={request.id} cookie={userCookie?.value} />
+          </td>
+          <td className="space-x-2 text-center">
+            <ApproveOrRejectReqBtn
+              id={request.id}
+              cookie={userCookie?.value}
+              isApproving={true}
+            />
+            <ApproveOrRejectReqBtn
+              id={request.id}
+              cookie={userCookie?.value}
+              isApproving={false}
+            />
+          </td>
+        </tr>
+      ))}
+    </>
+  );
+}
+
+export default async function RequestPage() {
+  const cookieStorage = await cookies();
+  const userCookie = cookieStorage.get("jwt");
 
   return (
     <div className="rounded-sm p-2 bg-red-700">
@@ -50,32 +86,9 @@ export default async function RequestPage() {
             </tr>
           </thead>
           <tbody>
-            {listRequest?.map((request: Request) => {
-              return (
-                <tr key={request.id}>
-                  <th>{request.id}</th>
-                  <td>{request.title}</td>
-                  <td>{request.user.username}</td>
-                  <td>{request.status}</td>
-                  <td className="space-x-2 text-center">
-                    <ViewReqBtn id={request.id} cookie={userCookie?.value} />
-                    <DeleteReqBtn id={request.id} cookie={userCookie?.value} />
-                  </td>
-                  <td className="space-x-2 text-center">
-                    <ApproveOrRejectReqBtn
-                      id={request.id}
-                      cookie={userCookie?.value}
-                      isApproving={true}
-                    />
-                    <ApproveOrRejectReqBtn
-                      id={request.id}
-                      cookie={userCookie?.value}
-                      isApproving={false}
-                    />
-                  </td>
-                </tr>
-              );
-            })}
+            <Suspense>
+              <TableContent />
+            </Suspense>
           </tbody>
         </table>
       </div>

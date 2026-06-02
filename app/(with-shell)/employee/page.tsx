@@ -1,35 +1,62 @@
 import { cookies } from "next/headers";
-import Link from "next/link";
-import EyeIcon from "@/public/icons/eyeIcon";
 import type { Employee } from "../../interface";
 import ViewEmployee from "./component/viewEmployee";
 import EditEmployee from "./component/editEmployee";
 import DeleteEmployee from "./component/deleteEmployee";
 import AddEmployee from "./component/addEmployee";
+import { Suspense } from "react";
 
-export default async function EmployeePage() {
-  let listEmployee: Employee[] | undefined = [];
+async function TableContent(): Promise<React.ReactNode> {
   const cookieStorage = await cookies();
   const userCookie = cookieStorage.get("jwt");
 
   const getEmployee = async () => {
     try {
       const res = await fetch("http://localhost:8080/hris-api/v1/user", {
+        cache: "no-store",
+        // next: {
+        //   revalidate: 1,
+        // },
         headers: {
           Authorization: `Bearer ${userCookie?.value}`,
         },
       });
-
       if (res.ok) {
         const listJSON: any = await res.json();
-        listEmployee = listJSON.data;
+        return listJSON.data;
       }
+
+      return [];
     } catch (error) {
       console.warn(error);
+      return [];
     }
   };
 
-  await getEmployee();
+  const listEmployee = await getEmployee();
+
+  return (
+    <>
+      {listEmployee.map((employee: Employee) => (
+        <tr key={employee.id}>
+          <td>{employee.id}</td>
+          <td>{employee.username}</td>
+          <td>{employee.email}</td>
+          <td>{employee.role.roleName}</td>
+          <td className="flex justify-center items-center space-x-4">
+            <ViewEmployee id={employee.id} cookie={userCookie?.value} />
+            <EditEmployee id={employee.id} cookie={userCookie?.value} />
+            <DeleteEmployee id={employee.id} cookie={userCookie?.value} />
+          </td>
+        </tr>
+      ))}
+    </>
+  );
+}
+
+export default async function EmployeePage() {
+  const cookieStorage = await cookies();
+  const userCookie = cookieStorage.get("jwt");
 
   return (
     <div className="rounded-sm p-2 bg-red-700">
@@ -51,24 +78,9 @@ export default async function EmployeePage() {
             </tr>
           </thead>
           <tbody>
-            {listEmployee?.map((employee: Employee) => {
-              return (
-                <tr key={employee.id}>
-                  <th>{employee.id}</th>
-                  <td>{employee.username}</td>
-                  <td>{employee.email}</td>
-                  <td>{employee.role.roleName}</td>
-                  <td className="flex justify-center items-center space-x-4">
-                    <ViewEmployee id={employee.id} cookie={userCookie?.value} />
-                    <EditEmployee id={employee.id} cookie={userCookie?.value} />
-                    <DeleteEmployee
-                      id={employee.id}
-                      cookie={userCookie?.value}
-                    />
-                  </td>
-                </tr>
-              );
-            })}
+            <Suspense>
+              <TableContent />
+            </Suspense>
           </tbody>
         </table>
       </div>

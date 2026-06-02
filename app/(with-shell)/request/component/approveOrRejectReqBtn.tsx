@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Modal from "../../component/modal/modal";
 import CheckIcon from "@/public/icons/checkIcon";
 import XIcon from "@/public/icons/xIcon";
+import { useRouter } from "next/navigation";
 
 export default function ApproveOrRejectReqBtn({
   id,
@@ -13,6 +14,7 @@ export default function ApproveOrRejectReqBtn({
   cookie: string | undefined;
   isApproving: boolean;
 }) {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const updateRequest = async () => {
@@ -34,6 +36,7 @@ export default function ApproveOrRejectReqBtn({
 
       if (res.ok) {
         alert("request updated!");
+        router.refresh();
         return;
       }
       alert("failed updating request!");

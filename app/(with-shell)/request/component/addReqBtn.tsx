@@ -4,8 +4,10 @@ import React, { useState } from "react";
 import Modal from "../../component/modal/modal";
 import { jwtDecode } from "jwt-decode";
 import { Request } from "@/app/interface";
+import { useRouter } from "next/navigation";
 
 export default function AddReqBtn({ cookie }: { cookie: string | undefined }) {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [req, setReq] = useState<Request>();
 
@@ -34,6 +36,7 @@ export default function AddReqBtn({ cookie }: { cookie: string | undefined }) {
 
       if (res.ok) {
         alert("request created!");
+        router.refresh();
         return;
       }
 

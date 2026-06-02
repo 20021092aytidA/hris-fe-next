@@ -4,12 +4,14 @@ import WrenchIcon from "@/public/icons/wrenchIcon";
 import Modal from "../../component/modal/modal";
 import { useEffect, useState } from "react";
 import { EmployeeDetail, EmployeePOST, Role } from "@/app/interface";
+import { useRouter } from "next/navigation";
 
 export default function AddEmployee({
   cookie,
 }: {
   cookie: string | undefined;
 }) {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [role, setRole] = useState<Role[]>();
   const [employeeDetail, setEmployeeDetail] = useState<EmployeePOST>();
@@ -17,6 +19,21 @@ export default function AddEmployee({
 
   useEffect(() => {
     if (isOpen) {
+      setEmployeeDetail({
+        address: "",
+        dateOfBirth: "",
+        email: "",
+        fullName: "",
+        jobPosition: "",
+        joinDate: "",
+        password: "",
+        roleID: -1,
+        salary: "",
+        userID: -1,
+        username: "",
+        leaveAmount: 0,
+        note: "",
+      });
       getRoles();
     }
   }, [isOpen]);
@@ -86,7 +103,7 @@ export default function AddEmployee({
 
         if (resDetail.ok) {
           alert("user created successfully!");
-          return;
+          router.refresh();
         }
         alert("failed creating user!");
       }

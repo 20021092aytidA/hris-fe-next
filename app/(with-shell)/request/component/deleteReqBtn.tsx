@@ -3,6 +3,7 @@
 import TrashIcon from "@/public/icons/trashIcon";
 import React, { useState } from "react";
 import Modal from "../../component/modal/modal";
+import { useRouter } from "next/navigation";
 
 export default function DeleteReqBtn({
   id,
@@ -11,6 +12,7 @@ export default function DeleteReqBtn({
   id: number;
   cookie: string | undefined;
 }) {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const deleteRequest = async () => {
@@ -27,6 +29,7 @@ export default function DeleteReqBtn({
 
       if (res.ok) {
         alert("request deleted!");
+        router.refresh();
         return;
       }
       alert("failed deleting request!");

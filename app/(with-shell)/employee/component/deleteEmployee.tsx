@@ -2,6 +2,7 @@
 import TrashIcon from "@/public/icons/trashIcon";
 import Modal from "../../component/modal/modal";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function DeleteEmployee({
   id,
@@ -10,6 +11,7 @@ export default function DeleteEmployee({
   id: number | string;
   cookie: string | undefined;
 }) {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const deleteEmployee = async () => {
@@ -23,6 +25,7 @@ export default function DeleteEmployee({
 
       if (res.ok) {
         alert("Employee deleted successfully!");
+        router.refresh();
         return;
       }
 

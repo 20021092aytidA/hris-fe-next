@@ -4,6 +4,7 @@ import WrenchIcon from "@/public/icons/wrenchIcon";
 import Modal from "../../component/modal/modal";
 import { useEffect, useState } from "react";
 import { Employee, EmployeeDetail, EmployeePUT, Role } from "@/app/interface";
+import { useRouter } from "next/navigation";
 
 export default function EditEmployee({
   id,
@@ -12,6 +13,7 @@ export default function EditEmployee({
   id: number | string;
   cookie: string | undefined;
 }) {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [employeeDetail, setEmployeeDetail] = useState<EmployeePUT>();
   const [role, setRole] = useState<Role>();
@@ -113,6 +115,8 @@ export default function EditEmployee({
     alert(
       `user: ${userEdited ? "successfully edited!" : "failed editing!"}\nuser detail:${userDetailEdited ? "successfully edited!" : "failed editing!"}`,
     );
+
+    router.refresh();
   };
 
   const saveUser = async (form: Record<string, any>): Promise<boolean> => {
