@@ -11,6 +11,25 @@ const authenticatedCheck = async (req: NextRequest): Promise<NextResponse> => {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
+  if (userCookie && userCookie.value) {
+    try {
+      const res = await fetch(`http://localhost:8080/hris-api/v1/user/token`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${userCookie.value}`,
+        },
+      });
+      if (res.ok) {
+        return NextResponse.next();
+      } else {
+        return NextResponse.redirect(new URL("/login", req.url));
+      }
+    } catch (error) {
+      console.warn(error);
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
+  }
+
   return NextResponse.next();
 };
 
