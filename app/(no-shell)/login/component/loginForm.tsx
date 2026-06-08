@@ -1,18 +1,40 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function LoginForm() {
+  type ErrorMessage = {
+    errUser: string;
+    errPass: string;
+  };
+
   const nav = useRouter();
   const [username, setEmail] = useState<string>("");
   const [pass, setPass] = useState<string>("");
-  const [isRemember, setIsRemember] = useState<boolean>(false);
+  const [errMsg, setErrMsg] = useState<ErrorMessage>({
+    errUser: "",
+    errPass: "",
+  });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleLogin = async () => {
-    // nav.push("/dashboard");
-    // return;
+  const clearField = () => {
+    setErrMsg({
+      errUser: "",
+      errPass: "",
+    });
+  };
 
+  const handleBtnClick = async (): Promise<void> => {
+    setIsLoading(true);
+    if (validateForm()) {
+      await handleLogin();
+    }
+
+    setIsLoading(false);
+  };
+
+  const handleLogin = async (): Promise<void> => {
     const jsonReq = {
       username: username,
       password: pass,
@@ -37,21 +59,46 @@ export default function LoginForm() {
 
       switch (res.status) {
         case 404:
-          alert("login failed!\nuser not found");
+          alert("login failed!, wrong credentials!");
           break;
 
         case 401:
-          alert("login failed!\nwrong credentials");
+          alert("login failed!, wrong credentials!");
           break;
 
         default:
-          alert("login failed");
+          alert("login failed, unknown error occured!\ntry again later.");
           break;
       }
     } catch (error) {
-      alert(`login failed:\n${error}`);
+      alert("login failed, unknown error occured!\ntry again later.");
     }
   };
+
+  const validateForm = (): boolean => {
+    clearField();
+
+    let isValid: boolean = true;
+
+    if (username.length === 0) {
+      console.log(username.length);
+      isValid = false;
+      // setErrMsg({ ...errMsg, errUser: "must be filled!" });
+      setErrMsg((prev) => ({ ...prev, errUser: "username must be filled!" }));
+    }
+
+    if (pass.length === 0) {
+      isValid = false;
+      // setErrMsg({ ...errMsg, errPass: "must be filled!" });
+      setErrMsg((prev) => ({ ...prev, errPass: "password must be filled!" }));
+    }
+
+    return isValid;
+  };
+
+  useEffect(() => {
+    clearField();
+  }, []);
 
   return (
     <>
@@ -61,40 +108,40 @@ export default function LoginForm() {
           <input
             type="username"
             required
-            className="input bg-white text-xs outline outline-gray-200"
+            className="input bg-white text-xs outline outline-gray-200 w-full"
             placeholder="Input username"
             value={username}
             onChange={(e) => setEmail(e.target.value)}
           />
+
+          {errMsg.errUser.length !== 0 ? (
+            <div className="text-red-600 text-right text-xs font-normal">
+              {errMsg.errUser}
+            </div>
+          ) : null}
         </fieldset>
         <fieldset className="col-span-6 sm:col-span-3 fieldset">
           <legend className="fieldset-legend text-black">Password</legend>
           <input
             type="password"
             required
-            className="input bg-white text-xs outline outline-gray-200"
+            className="input bg-white text-xs outline outline-gray-200 w-full"
             placeholder="Input password"
             value={pass}
             onChange={(e) => setPass(e.target.value)}
           />
+          {errMsg.errPass.length !== 0 ? (
+            <div className="text-red-600 text-right text-xs font-normal">
+              {errMsg.errPass}
+            </div>
+          ) : null}
         </fieldset>
       </div>
-      <div className="flex justify-between">
-        <div className="flex fieldset items-center">
-          <label htmlFor="rememberCheck" className=" cursor-pointer">
-            Remember me
-          </label>
-          <input
-            id="rememberCheck"
-            type="checkbox"
-            checked={isRemember}
-            onChange={() => setIsRemember(isRemember ? false : true)}
-            className="size-5 checkbox rounded-md border-gray-300 checked:bg-red-700! checked:text-white"
-          />
-        </div>
+      <div className="flex justify-end">
         <button
           className="px-4 py-2 font-semibold hover:underline text-white bg-red-700! hover:bg-red-800! rounded-sm cursor-pointer text-sm shadow-md"
-          onClick={() => handleLogin()}
+          onClick={handleBtnClick}
+          disabled={isLoading}
         >
           login
         </button>
