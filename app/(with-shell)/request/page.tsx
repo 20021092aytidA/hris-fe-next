@@ -67,11 +67,8 @@ export default async function RequestPage() {
 
   return (
     <div className="rounded-sm p-2 bg-red-700">
-      <div className="flex justify-between mb-2">
+      <div className="flex justify-start mb-2">
         <AddReqBtn cookie={userCookie?.value} />
-        <label className="input bg-transparent text-white border-white">
-          <input type="search" className="grow" placeholder="Search" />
-        </label>
       </div>
       <div className="overflow-x-auto bg-white rounded-sm shadow-md">
         <table className="table table-md p-2">

@@ -1,5 +1,6 @@
 "use client";
 
+import { Employee } from "@/app/interface";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -52,8 +53,9 @@ export default function LoginForm() {
 
       if (res.ok) {
         const jsonRes: any = await res.json();
-        alert("login success");
         nav.push("/dashboard");
+
+        alert("login success");
         return;
       }
 
@@ -110,7 +112,7 @@ export default function LoginForm() {
             required
             className="input bg-white text-xs outline outline-gray-200 w-full"
             placeholder="Input username"
-            value={username}
+            value={username || ""}
             onChange={(e) => setEmail(e.target.value)}
           />
 
@@ -127,7 +129,7 @@ export default function LoginForm() {
             required
             className="input bg-white text-xs outline outline-gray-200 w-full"
             placeholder="Input password"
-            value={pass}
+            value={pass || ""}
             onChange={(e) => setPass(e.target.value)}
           />
           {errMsg.errPass.length !== 0 ? (

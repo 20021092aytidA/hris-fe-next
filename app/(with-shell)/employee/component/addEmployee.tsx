@@ -104,6 +104,7 @@ export default function AddEmployee({
         if (resDetail.ok) {
           alert("user created successfully!");
           router.refresh();
+          return;
         }
         alert("failed creating user!");
       }

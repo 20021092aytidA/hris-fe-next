@@ -14,9 +14,6 @@ async function TableContent(): Promise<React.ReactNode> {
     try {
       const res = await fetch("http://localhost:8080/hris-api/v1/user", {
         cache: "no-store",
-        // next: {
-        //   revalidate: 1,
-        // },
         headers: {
           Authorization: `Bearer ${userCookie?.value}`,
         },
@@ -60,11 +57,8 @@ export default async function EmployeePage() {
 
   return (
     <div className="rounded-sm p-2 bg-red-700">
-      <div className="flex justify-between">
+      <div className="flex justify-start">
         <AddEmployee cookie={userCookie?.value} />
-        <label className="input bg-transparent text-white border-white">
-          <input type="search" className="grow" placeholder="Search" />
-        </label>
       </div>
       <div className="overflow-x-auto bg-white rounded-sm shadow-md">
         <table className="table table-md p-2">
